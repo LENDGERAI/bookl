@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
 from sqlalchemy import func, select
@@ -95,7 +95,7 @@ class NotificationService:
         language: str,
         country_profile: CountryProfile,
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         due_this_month = now.replace(day=min(country_profile.tax_deadline_day, 28), hour=0, minute=0, second=0)
         if due_this_month < now:
             due_this_month = (due_this_month + timedelta(days=32)).replace(day=min(country_profile.tax_deadline_day, 28))
@@ -111,7 +111,7 @@ class NotificationService:
             )
 
     def receivable_reminders(self, db: Session, business_id: str) -> None:
-        cutoff = datetime.utcnow().date() - timedelta(days=30)
+        cutoff = datetime.now(timezone.utc).date() - timedelta(days=30)
         stale_receivables = db.scalars(
             select(Transaction).where(
                 Transaction.business_id == business_id,

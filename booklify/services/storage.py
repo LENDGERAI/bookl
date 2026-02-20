@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from booklify.core.config import get_settings
@@ -44,7 +44,7 @@ class StorageService:
 
         safe_name = self._sanitize_filename(filename)
         hashed = self.security.hash_bytes(payload)
-        day_partition = datetime.utcnow().strftime("%Y%m%d")
+        day_partition = datetime.now(timezone.utc).strftime("%Y%m%d")
         target_dir = self.settings.upload_path / business_id / day_partition
         target_dir.mkdir(parents=True, exist_ok=True)
         target_path = target_dir / f"{hashed}_{safe_name}"

@@ -1,21 +1,20 @@
 from __future__ import annotations
 
 import shutil
-from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 
+from booklify.core.database import Base, engine
 from booklify.main import create_app
 
 
 @pytest.fixture()
 def client() -> TestClient:
-    db_file = Path("/workspace/booklify.db")
-    if db_file.exists():
-        db_file.unlink()
     shutil.rmtree("/workspace/uploads", ignore_errors=True)
     shutil.rmtree("/workspace/exports", ignore_errors=True)
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
 
     app = create_app()
     with TestClient(app) as test_client:

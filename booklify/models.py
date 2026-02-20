@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import date, datetime, timezone
 
 from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Numeric, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -14,7 +14,7 @@ def _uuid() -> str:
 
 
 def _utcnow() -> datetime:
-    return datetime.utcnow()
+    return datetime.now(timezone.utc)
 
 
 class Business(Base):
@@ -75,7 +75,7 @@ class Transaction(Base):
     description: Mapped[str | None] = mapped_column(String(300), nullable=True)
     counterparty: Mapped[str | None] = mapped_column(String(200), nullable=True)
     reference_number: Mapped[str | None] = mapped_column(String(120), nullable=True)
-    occurred_on: Mapped[datetime | None] = mapped_column(Date, nullable=True)
+    occurred_on: Mapped[date | None] = mapped_column(Date, nullable=True)
     amount: Mapped[float] = mapped_column(Numeric(14, 2), nullable=False)
     tax_amount: Mapped[float] = mapped_column(Numeric(14, 2), nullable=False, default=0.0)
     currency: Mapped[str] = mapped_column(String(8), nullable=False, default="USD")

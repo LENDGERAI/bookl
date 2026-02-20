@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile, status
@@ -206,7 +206,7 @@ def rollback_document(
         db.add(cloned)
         restored += 1
     current_doc.status = "rolled_back"
-    current_doc.processed_at = datetime.utcnow()
+    current_doc.processed_at = datetime.now(timezone.utc)
     db.add(current_doc)
     db.commit()
     return {"restored_transactions": restored, "from_version": previous_doc.version, "to_version": current_doc.version}

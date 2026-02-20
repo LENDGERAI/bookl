@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -134,7 +134,7 @@ class WorkflowService:
                 if not extracted:
                     document.status = "review_required"
                     document.error_message = "No transaction data extracted."
-                    document.processed_at = datetime.utcnow()
+                    document.processed_at = datetime.now(timezone.utc)
                     db.add(document)
                     self.notification_service.create(
                         db,
@@ -163,7 +163,7 @@ class WorkflowService:
 
                 document.status = "processed"
                 document.error_message = None
-                document.processed_at = datetime.utcnow()
+                document.processed_at = datetime.now(timezone.utc)
                 document.extracted_payload_encrypted = self.security_service.encrypt_text(
                     json.dumps(raw_for_audit, default=self._json_default)
                 )
@@ -182,7 +182,7 @@ class WorkflowService:
                 if document:
                     document.status = "failed"
                     document.error_message = str(exc)[:1000]
-                    document.processed_at = datetime.utcnow()
+                    document.processed_at = datetime.now(timezone.utc)
                     db.add(document)
                     db.commit()
 

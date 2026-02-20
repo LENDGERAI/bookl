@@ -1,0 +1,30 @@
+[project]
+name = "booklify"
+version = "0.1.0"
+description = "Booklify - AI bookkeeping and financial assistant platform"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.116.1",
+  "uvicorn>=0.35.0",
+  "sqlalchemy>=2.0.43",
+  "pydantic>=2.11.9",
+  "pydantic-settings>=2.11.0",
+  "python-multipart>=0.0.20",
+  "openpyxl>=3.1.5",
+  "pypdf>=6.0.0",
+  "cryptography>=46.0.1",
+  "httpx>=0.28.1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.4.2",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=80.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
